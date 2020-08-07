@@ -6,16 +6,17 @@ const geocode = require('./utils/geocode')
 const forecast = require('./utils/forecast')
 
 const app = express()
+const port = process.env.PORT || 3000
 
 // Define paths for Express config
 const publicDirectory = path.join(__dirname, '../public')
-const viewsPath = path.join(__dirname, '../templates/views') //we have to tell express which folder to use for views if we want to customize it (anything other than views default name)
+const viewsPath = path.join(__dirname, '../templates/views')
 const partialsPath = path.join(__dirname, '../templates/partials')
 
-// Setup handlebars engine and views location
+//hbs engine and views location
 app.set('view engine', 'hbs')
-app.set('views', viewsPath) //where we setup a setting to control our folder name/location of our views templates main folder
-hbs.registerPartials(partialsPath) //registering partials path
+app.set('views', viewsPath)
+hbs.registerPartials(partialsPath)
 
 // Setup static directory to serve
 app.use(express.static(publicDirectory))
@@ -57,8 +58,6 @@ app.get('/weather', (req, res) => {
             if(error) {
                 return console.log(error)
             }
-            // console.log(forecastData)
-            // console.log(location)
             res.send({
                 forecastData,
                 location,
@@ -75,7 +74,6 @@ app.get('/products', (req, res) => {
             error: 'You must provide a search term'
         })
     } 
-    // console.log(req.query.search)
     res.send({
         products: []
     })
@@ -90,8 +88,7 @@ app.get('/help/*', (req, res) => {
     })
 })
 
-//this has to be last of the gets
-app.get('*', (req,res) => { //* MATCH ANYTHING THAT HASNT BEEN MATCHED SO FAR
+app.get('*', (req,res) => {
     res.render('404', {
         title: '404',
         errorMessage: 'Page not found!',
@@ -99,6 +96,6 @@ app.get('*', (req,res) => { //* MATCH ANYTHING THAT HASNT BEEN MATCHED SO FAR
     })
 })
 
-app.listen(3000, () => {
-    console.log('Server is up on port 3000.')
+app.listen(port, () => {
+    console.log(`Server is up on port ${port}.`)
 })
